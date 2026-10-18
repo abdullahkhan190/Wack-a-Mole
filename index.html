@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Whack-a-Mole</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 32px 16px;
+            display: grid;
+            place-items: center;
+            background:
+                radial-gradient(ellipse at top, rgba(99, 102, 241, 0.2), transparent 55%),
+                #101323;
+            color: #f8fafc;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        }
+
+        .game {
+            width: min(100%, 620px);
+            padding: clamp(22px, 5vw, 38px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 28px;
+            background: rgba(25, 29, 51, 0.92);
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.38);
+        }
+
+        .eyebrow {
+            margin: 0 0 8px;
+            color: #a5b4fc;
+            font-size: 0.75rem;
+            font-weight: 800;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: clamp(2rem, 7vw, 3rem);
+            letter-spacing: -0.06em;
+        }
+
+        .subtitle {
+            margin: 8px 0 24px;
+            color: #a6abc0;
+        }
+
+        .game-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .info-card {
+            min-width: 0;
+            padding: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 18px;
+            background: rgba(255, 255, 255, 0.045);
+        }
+
+        .info-card h2 {
+            margin: 0 0 12px;
+            color: #b8bdd0;
+            font-size: 0.8rem;
+            font-weight: 700;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+        }
+
+        #score {
+            color: #facc15;
+            font-size: 2.5rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        #players {
+            display: grid;
+            gap: 7px;
+            max-height: 92px;
+            margin: 0;
+            padding: 0;
+            overflow-y: auto;
+            list-style: none;
+        }
+
+        #players li {
+            display: flex;
+            justify-content: space-between;
+            gap: 8px;
+            color: #eef0f8;
+            font-size: 0.9rem;
+        }
+
+        .board-frame {
+            padding: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 22px;
+            background: rgba(10, 13, 27, 0.62);
+        }
+
+        #board {
+            display: grid;
+            grid-template-columns: repeat(6, minmax(0, 1fr));
+            gap: clamp(6px, 1.8vw, 10px);
+        }
+
+        .cell {
+            aspect-ratio: 1;
+            padding: 0;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: clamp(8px, 2vw, 14px);
+            background: #303650;
+            cursor: pointer;
+            box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.15);
+            transition: transform 120ms ease, background-color 150ms ease, box-shadow 150ms ease;
+        }
+
+        .cell:hover {
+            transform: translateY(-2px);
+            background: #414967;
+        }
+
+        .cell:active {
+            transform: translateY(1px) scale(0.97);
+        }
+
+        .cell:focus-visible {
+            outline: 3px solid #c4b5fd;
+            outline-offset: 3px;
+        }
+
+        .cell.highlighted {
+            border-color: #fde68a;
+            background: #facc15;
+            box-shadow: 0 0 22px rgba(250, 204, 21, 0.48), inset 0 -3px 0 rgba(146, 92, 0, 0.2);
+            transform: scale(1.04);
+        }
+
+        @media (max-width: 420px) {
+            .game-info {
+                grid-template-columns: 1fr;
+            }
+
+            #players {
+                max-height: 100px;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                scroll-behavior: auto !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="game">
+        <p class="eyebrow">Quick reflexes</p>
+        <h1>Whack-a-Mole</h1>
+        <p class="subtitle">Tap the glowing tile before it disappears!</p>
+        <section class="game-info" aria-label="Game scores">
+            <div class="info-card">
+                <h2>Your score</h2>
+                <span id="score" aria-live="polite">0</span>
+            </div>
+            <div class="info-card">
+                <h2>Players</h2>
+                <ul id="players" aria-live="polite"></ul>
+            </div>
+        </section>
+        <div class="board-frame">
+            <div id="board" aria-label="6 by 6 game board">
+        <button class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button><button
+            class="cell"></button><button class="cell"></button><button class="cell"></button>
+            </div>
+        </div>
+    </main>
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        const scoreDisplay = document.getElementById('score');
+        const playersDisplay = document.getElementById('players');
+        const socketProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
+        const socket = new WebSocket(`${socketProtocol}//${window.location.host}`);
+        let playerId = null;
+
+        socket.addEventListener('message', (event) => {
+            const message = JSON.parse(event.data);
+
+            if (message.action === 'playerAssigned') {
+                playerId = message.playerId;
+                return;
+            }
+
+            if (message.action === 'playersUpdate') {
+                const players = Array.isArray(message.players) ? message.players : [];
+                const ownPlayer = players.find((player) => player.playerId === playerId);
+                scoreDisplay.textContent = ownPlayer ? ownPlayer.score : '0';
+                playersDisplay.replaceChildren(...players.map((player) => {
+                    const item = document.createElement('li');
+                    const name = player.playerId === playerId
+                        ? 'You'
+                        : `Player ${player.playerId}`;
+                    item.textContent = `${name}: ${player.score}`;
+                    return item;
+                }));
+                return;
+            }
+
+            const cell = cells[message.cellIndex];
+
+            if (!cell) return;
+
+            if (message.action === 'highlightCell') {
+                cell.classList.add('highlighted');
+            } else if (message.action === 'clearCell') {
+                cell.classList.remove('highlighted');
+            }
+        });
+
+        cells.forEach(cell => {
+            cell.addEventListener('click', () => {
+                if (socket.readyState === WebSocket.OPEN) {
+                    socket.send(JSON.stringify({ action: 'cellClicked', cellIndex: Array.from(cells).indexOf(cell) }));
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
