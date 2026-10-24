@@ -157,7 +157,10 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            *, *::before, *::after {
+
+            *,
+            *::before,
+            *::after {
                 scroll-behavior: auto !important;
                 transition-duration: 0.01ms !important;
             }
@@ -182,18 +185,18 @@
         </section>
         <div class="board-frame">
             <div id="board" aria-label="6 by 6 game board">
-        <button class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button><button
-            class="cell"></button><button class="cell"></button><button class="cell"></button>
+                <button class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
+                    class="cell"></button><button class="cell"></button><button class="cell"></button>
             </div>
         </div>
     </main>
@@ -239,8 +242,10 @@
 
             if (message.action === 'highlightCell') {
                 cell.classList.add('highlighted');
+                cell.innerHTML = `<img src="./mole.jpeg" alt="Mole" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit;">`;
             } else if (message.action === 'clearCell') {
                 cell.classList.remove('highlighted');
+                   cell.innerHTML = '';
             }
         });
 

@@ -14,6 +14,10 @@ app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "index.html"));
 });
 
+app.get("/mole.jpeg", (req, res) => {
+  res.sendFile(path.join(__dirname, "mole.jpeg"));
+});
+
 let waitingplayers = [];
 
 wss.on('connection', (socket) => {
