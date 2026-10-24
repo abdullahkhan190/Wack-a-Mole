@@ -26,6 +26,7 @@ wss.on('connection', (socket) => {
     console.log('Client connected');
     socket.playerId = nextPlayerId++;
     socket.score = 0;
+    socket.username = `Player ${socket.playerId}`;
     socket.lastScoredRound = 0;
     socket.send(JSON.stringify({ action: 'playerAssigned', playerId: socket.playerId }));
     broadcastPlayerScores();
@@ -39,6 +40,14 @@ wss.on('connection', (socket) => {
             return;
         }
 
+        if (data.action === 'setUsername') {
+            if (typeof data.username === 'string' && data.username.trim()) {
+                socket.username = data.username.trim().slice(0, 24);
+                broadcastPlayerScores();
+            }
+            return;
+        }
+
         if (data.action === 'cellClicked') {
             if (!Number.isInteger(data.cellIndex) || data.cellIndex < 0 || data.cellIndex >= 36) {
                 return;
@@ -47,6 +56,8 @@ wss.on('connection', (socket) => {
             if (data.cellIndex === activeCellIndex && socket.lastScoredRound !== activeRound) {
                 socket.score += 1;
                 socket.lastScoredRound = activeRound;
+                activeCellIndex = null;
+                broadcast({ action: 'clearCell', cellIndex: data.cellIndex });
                 broadcastPlayerScores();
                 console.log(`Cell ${data.cellIndex} hit. Player score: ${socket.score}`);
             }
@@ -72,6 +83,7 @@ function broadcastPlayerScores() {
         .filter((client) => client.readyState === ws.OPEN && Number.isInteger(client.playerId))
         .map((client) => ({
             playerId: client.playerId,
+            username: client.username,
             score: client.score
         }));
 

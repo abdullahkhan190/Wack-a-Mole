@@ -172,7 +172,7 @@
         <p class="subtitle">Tap the glowing tile before it disappears!</p>
         <section class="game-info" aria-label="Game scores">
             <div class="info-card">
-                <h2>Your score</h2>
+                <h2 id="score-label">Your score</h2>
                 <span id="score" aria-live="polite">0</span>
             </div>
             <div class="info-card">
@@ -198,18 +198,25 @@
         </div>
     </main>
     <script>
+        const username = (prompt("Enter your username:") || "Anonymous").trim().slice(0, 24) || "Anonymous";
         const cells = document.querySelectorAll('.cell');
         const scoreDisplay = document.getElementById('score');
+        const scoreLabel = document.getElementById('score-label');
         const playersDisplay = document.getElementById('players');
         const socketProtocol = window.location.protocol === "https:" ? "wss:" : "ws:";
         const socket = new WebSocket(`${socketProtocol}//${window.location.host}`);
         let playerId = null;
+
+        socket.addEventListener('open', () => {
+            socket.send(JSON.stringify({ action: 'setUsername', username }));
+        });
 
         socket.addEventListener('message', (event) => {
             const message = JSON.parse(event.data);
 
             if (message.action === 'playerAssigned') {
                 playerId = message.playerId;
+                scoreLabel.textContent = `${username}'s score`;
                 return;
             }
 
@@ -219,9 +226,7 @@
                 scoreDisplay.textContent = ownPlayer ? ownPlayer.score : '0';
                 playersDisplay.replaceChildren(...players.map((player) => {
                     const item = document.createElement('li');
-                    const name = player.playerId === playerId
-                        ? 'You'
-                        : `Player ${player.playerId}`;
+                    const name = player.username || `Player ${player.playerId}`;
                     item.textContent = `${name}: ${player.score}`;
                     return item;
                 }));
