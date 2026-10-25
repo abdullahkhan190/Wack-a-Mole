@@ -110,7 +110,7 @@
 
         #board {
             display: grid;
-            grid-template-columns: repeat(6, minmax(0, 1fr));
+            grid-template-columns: repeat(4, minmax(0, 1fr));
             gap: clamp(6px, 1.8vw, 10px);
         }
 
@@ -184,19 +184,13 @@
             </div>
         </section>
         <div class="board-frame">
-            <div id="board" aria-label="6 by 6 game board">
+            <div id="board" aria-label="4 by 4 game board">
                 <button class="cell"></button><button class="cell"></button><button class="cell"></button><button
                     class="cell"></button><button class="cell"></button><button class="cell"></button><button
                     class="cell"></button><button class="cell"></button><button class="cell"></button><button
                     class="cell"></button><button class="cell"></button><button class="cell"></button><button
                     class="cell"></button><button class="cell"></button><button class="cell"></button><button
-                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
-                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
-                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
-                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
-                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
-                    class="cell"></button><button class="cell"></button><button class="cell"></button><button
-                    class="cell"></button><button class="cell"></button><button class="cell"></button>
+                    class="cell"></button>
             </div>
         </div>
     </main>
@@ -245,7 +239,7 @@
                 cell.innerHTML = `<img src="./mole.jpeg" alt="Mole" style="width: 100%; height: 100%; object-fit: cover; border-radius: inherit;">`;
             } else if (message.action === 'clearCell') {
                 cell.classList.remove('highlighted');
-                   cell.innerHTML = '';
+                cell.innerHTML = '';
             }
         });
 
