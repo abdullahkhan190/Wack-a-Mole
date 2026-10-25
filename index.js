@@ -53,7 +53,7 @@ wss.on('connection', (socket) => {
         }
 
         if (data.action === 'cellClicked') {
-            if (!Number.isInteger(data.cellIndex) || data.cellIndex < 0 || data.cellIndex >= 36) {
+            if (!Number.isInteger(data.cellIndex) || data.cellIndex < 0 || data.cellIndex >= 16) {
                 return;
             }
 
@@ -95,7 +95,7 @@ function broadcastPlayerScores() {
 }
 
 setInterval(() => {
-    const cellIndex = Math.floor(Math.random() * 36);
+    const cellIndex = Math.floor(Math.random() * 16);
     activeCellIndex = cellIndex;
     activeRound += 1;
     const round = activeRound;
